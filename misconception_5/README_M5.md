@@ -48,7 +48,9 @@ Open `M5_SpeedLoop.slx` and double-click `PID Controller`. It opens at `Kp = 0.6
 
 Then confirm the type is **PI** and click **Tune**.
 
-PID Tuner linearizes the loop and hands you a starting point almost immediately. Take its default and simulate it:
+PID Tuner linearizes the loop and hands you a starting point almost immediately. Take its default, click **Update Block** so the gains are actually written into the `PID Controller` block, and simulate it:
+
+> **Click Update Block every time.** PID Tuner's plots are a preview. Until you click **Update Block**, the model still holds `0.65 / 2.20`, and anything you simulate or validate is the untuned loop - which fails overshoot at about 36 %. If a result looks like nothing changed, this is almost always why. Check the gains printed at the top of `run_M5_validation` against the ones in the tuner.
 
 ```text
 setting              Kp       Ki |    rise  settle     OS%   verdict
@@ -62,19 +64,24 @@ default           0.231    0.953 |   0.216   0.962    9.33   FAIL: settling
 The instinct is to pull **Transient Behavior** toward *More Robust*, or **Response Time** toward *Slower*. Try it:
 
 ```text
-response time 3 rad/s    0.098    0.518 |   0.441   1.554    9.97   FAIL: rise, settling
-response time 4 rad/s    0.156    0.722 |   0.311   1.219   10.03   FAIL: rise, settling, overshoot
+setting              Kp       Ki |    rise  settle     OS%   verdict
+slower           0.098    0.518 |   0.441   1.554    9.97   FAIL: rise, settling
+slower           0.156    0.722 |   0.311   1.219   10.03   FAIL: rise, settling, overshoot
 ```
 
 Worse. Much worse.
 
-With a delay in the loop, a sluggish controller does not settle gently — it sits outside the band for longer and misses rise time as well. **Go faster instead:**
+With a delay in the loop, a sluggish controller does not settle gently — it sits outside the band for longer and misses rise time as well. **Go faster instead** — drag **Response Time** toward *Faster*:
 
 ```text
-response time 8 rad/s    0.394    1.166 |   0.119   0.439    5.91   PASS
+faster           0.394    1.166 |   0.119   0.439    5.91   PASS
 ```
 
-Aim for roughly `Kp = 0.35`, `Ki = 0.8` to `1.2`. The shipped model uses `Kp = 0.35`, `Ki = 0.80`.
+Aim for roughly `Kp = 0.35` to `0.4`, `Ki = 0.8` to `1.2`. The shipped answer is `Kp = 0.35`, `Ki = 0.80`. Then click **Update Block**.
+
+The **Response Time** slider is in seconds, and where a given slider position lands depends on your release, so steer by the gains the tuner shows rather than by the slider's number. The rows above were reproduced by asking for a slower and faster loop crossover; the gains are what matter.
+
+> **Why overshoot keeps landing right on 10 %.** PID Tuner aims for a fixed amount of robustness (phase margin), not for your overshoot limit. On this delayed loop that target produces about 9 to 10 % overshoot across most of the slider range, so a small nudge can flip overshoot from PASS to FAIL. If overshoot fails, do not reach for *More Robust* first: move **Response Time** toward *Faster*, and if overshoot is still marginal, bring `Ki` down a little toward `0.8` — the integral term is what carries the speed past its target.
 
 > **A trap worth knowing about.** PID Tuner does not simulate your model — it **linearizes** it. A `Transport Delay` block only contributes to a linearization if its **Pade order** is greater than zero, and the default is **zero**. Leave it at the default and your delay silently disappears from the plant the tuner designs against; it will hand you gains for a loop that does not exist. The delay in this model is set to Pade order 3 so that cannot happen. Open the block and look, because this one costs people days.
 
@@ -172,6 +179,8 @@ That last part is not overhead. It is how engineering work becomes a product.
 ## Notes For Facilitators
 
 Step 1 is the one that earns the module. Take the tuner's default, run it, and let the room see it fail — then let somebody suggest making it more robust before you show that going faster is the fix. The counterintuitive direction is what makes it stick.
+
+The most common slip in the room is forgetting **Update Block**: someone tunes, runs `run_M5_validation`, and sees the original 36 % overshoot. Point them at the gains printed on the first line of its output.
 
 Do not let step 5 become a code generation tutorial. The claim is narrow: a validated controller boundary reduces translation error and gives software teammates something concrete.
 
