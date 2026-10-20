@@ -151,20 +151,20 @@ figureHandle = figure("Name", "M5 Validation", "Color", "w");
 layout = tiledlayout(2, 1, "TileSpacing", "compact", "Padding", "compact");
 title(layout, "Closed-Loop Evidence For The Implemented Controller");
 
+% Plot only the signals the requirements are judged on: true wheel speed
+% against the command, and requested voltage against the driver limit.
 nexttile;
 plot(results.time_s, results.speedCommand_radps, "k--", "LineWidth", 1.1);
 hold on;
 plot(results.time_s, results.trueSpeed_radps, "LineWidth", 1.3);
-plot(results.time_s, results.measuredSpeed_radps, "LineWidth", 1.1);
 grid on;
 ylabel("Speed [rad/s]");
 title("Motor speed");
-legend("Command", "True speed", "Measured speed", "Location", "southeast");
+legend("Command", "Motor speed", "Location", "southeast");
 
 nexttile;
 plot(results.time_s, results.requestedVoltage_V, "LineWidth", 1.3);
 hold on;
-plot(results.time_s, results.appliedVoltage_V, "LineWidth", 1.1);
 yline(params.actuatorLimit_V, "k--", "+12 V limit", ...
     "LabelHorizontalAlignment", "left");
 yline(-params.actuatorLimit_V, "k--", "-12 V limit", ...
@@ -172,8 +172,8 @@ yline(-params.actuatorLimit_V, "k--", "-12 V limit", ...
 grid on;
 xlabel("Time [s]");
 ylabel("Voltage [V]");
-title("Motor voltage");
-legend("Requested voltage", "Applied voltage", "Location", "northeast");
+title("Requested motor voltage");
+legend("Requested voltage", "Location", "northeast");
 
 exportgraphics(figureHandle, plotFile, "Resolution", 150);
 end
