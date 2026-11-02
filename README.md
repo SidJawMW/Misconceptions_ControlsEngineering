@@ -19,6 +19,11 @@ Participants will leave with a clearer understanding of what controls engineerin
 
 ## Getting Started
 
+### Trial License for MATLAB Expo
+
+If you are a MATLAB Expo attendee, please get access to a trial license of MATLAB Online [here](https://www.mathworks.com/licensecenter/classroom/expo2026-1)
+1.	Click on the MATLAB trial license link and login into your MathWorks account (create one if you do not have one)
+
 ### Open in MATLAB Online
 
 Click the button below to clone this repository into MATLAB Online and open the workshop project. Nothing to install — you only need a MathWorks account.
