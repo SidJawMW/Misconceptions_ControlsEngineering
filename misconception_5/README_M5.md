@@ -69,7 +69,7 @@ slower           0.098    0.518 |   0.441   1.554    9.97   FAIL: rise, settling
 slower           0.156    0.722 |   0.311   1.219   10.03   FAIL: rise, settling, overshoot
 ```
 
-Worse. Much worse.
+Worse.
 
 With a delay in the loop, a sluggish controller does not settle gently — it sits outside the band for longer and misses rise time as well. **Go faster instead** — drag **Response Time** toward *Faster*:
 
@@ -118,16 +118,14 @@ Three things about that boundary are deliberate:
 
 The `Driver Limit` inside the plant is a different thing and is deliberately *not* here. That one is the hardware's; this one is the controller knowing about it.
 
-**There is no plant in it.** You are handing over a controller, not a simulation.
 
 ### 5. Generate C from that boundary
 
 With Simulink Coder or Embedded Coder installed:
 
-1. Single-click the `Speed Controller` subsystem to select it.
-2. Right-click and choose **C/C++ Code**.
-3. Choose the generate or build command for the selected subsystem.
-4. Open the code generation report and read the step function.
+1. From the APPS tab, choose Simulink Coder
+2. Choose the generate or build command for the selected subsystem.
+3. Open the code generation report and look at the generated code
 
 You should be able to point at the error calculation, the integrator update and the clamp, and match each one to a block you reviewed.
 
@@ -176,12 +174,3 @@ Across five modules you went from "I'll be tuning controllers all day" to someth
 
 That last part is not overhead. It is how engineering work becomes a product.
 
-## Notes For Facilitators
-
-Step 1 is the one that earns the module. Take the tuner's default, run it, and let the room see it fail — then let somebody suggest making it more robust before you show that going faster is the fix. The counterintuitive direction is what makes it stick.
-
-The most common slip in the room is forgetting **Update Block**: someone tunes, runs `run_M5_validation`, and sees the original 36 % overshoot. Point them at the gains printed on the first line of its output.
-
-Do not let step 5 become a code generation tutorial. The claim is narrow: a validated controller boundary reduces translation error and gives software teammates something concrete.
-
-For the Agentic AI segment, play a short recording rather than demonstrating live, and keep the framing honest — this is what industry is starting to explore, not what it has settled on.

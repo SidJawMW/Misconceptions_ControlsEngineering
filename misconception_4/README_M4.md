@@ -119,28 +119,8 @@ The requested voltage never exceeds what the driver can deliver, so there is not
 
 It still overshoots more than the `10 %` in the requirements block — the requirement is written for a commanded step, and being shoved by a rug is a disturbance, not a command. Anti-windup fixed the windup. It did not tune your controller. Module 5 does that.
 
-### 7. Now read the rest of that dialog
 
-While it is open, look at what else is on it — every one of these is a question somebody already answered, tested and documented:
-
-| Setting | The question it answers |
-| --- | --- |
-| Anti-windup method | What should the integrator do while the output is saturated? |
-| Time domain | Continuous or discrete? *You will need discrete on a processor.* |
-| Integrator method | Forward Euler, backward Euler, trapezoidal? |
-| External reset | How do you clear the integrator when the controller is disabled? |
-| Initial conditions | What does the integrator start at, and can that come from a signal? |
-| Output limits | What can the actuator actually deliver? |
-| Tracking mode | How do you hand control over without the output jumping? |
-| Filter coefficient | How do you stop the derivative amplifying noise, if you add D? |
-
-Two of those are worth a sentence each, because they bite on real robots:
-
-**Integrator reset.** The robot pauses between cleaning passes. Your controller is disabled, but the integrator holds everything it accumulated while standing still — and dumps it the moment you re-enable.
-
-**Tracking mode, or bumpless transfer.** The robot docks under manual control, then hands back to the speed loop. If the integrator does not know what the output was during manual control, the wheel jumps at the handover.
-
-### 8. The point
+### 7. The point
 
 You could build every one of those. None of them is beyond you.
 
@@ -162,13 +142,3 @@ Motor voltage       within +/-12 V
 ## Where This Applies Beyond Simulink
 
 The same judgement applies to a PID class in a Python library, a motor driver from a vendor, or a filter implementation from a standard. And it applies to code an AI agent writes for you: asking an agent to recreate a PID controller from scratch spends effort on a solved problem, can still get the edge cases wrong, and leaves you holding something nobody has validated. Reuse what is trusted. Spend your judgement on what is yours.
-
-## Notes For Facilitators
-
-Show the voltage panel before the speed panel. The ramp climbing past the 12 V line is the mechanism, and once the room sees it the overshoot is obvious rather than surprising.
-
-Step 4 is the beat that matters. Give people a moment to actually look for where the fix would go inside the hand-built PI, and let the absence land before you reach for the library.
-
-**Do step 5 live.** Dragging in the block, deleting the subsystem and ticking two boxes takes under a minute, and doing it in front of the room is far stronger than opening a finished model. `M4_PIDBlock.slx` is there so you have something to fall back on if the live edit goes wrong, and so self-paced learners can check themselves.
-
-Do not read the dialog table aloud. Scroll the real dialog and let people see the length of it.

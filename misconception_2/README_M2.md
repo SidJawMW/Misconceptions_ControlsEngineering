@@ -52,9 +52,9 @@ The response gets dramatically better:
 rise 0.015 s    settling 0.130 s    overshoot 4.4 %
 ```
 
-A ten-times faster rise, better settling, overshoot still comfortably inside the limit. **Check it against the requirements. It passes all of them.** This is not a trick — against this plant, that tuning is genuinely excellent, and you would be right to prefer it.
+A ten-times faster rise, better settling, overshoot still comfortably inside the limit. **Check it against the requirements. It passes all of them but one.** 
 
-### 3. Now look at the voltage
+### 3. But, now look at the voltage being commanded
 
 The requested voltage peaks around **60 V**.
 
@@ -93,9 +93,10 @@ Rise time           < 0.30 s
 Settling time       < 0.80 s
 Overshoot           < 10 %
 Steady-state error  < 2 %
+Motor voltage       within +/- 12 V
 ```
 
-Note what is **not** on that list: any constraint on the voltage. That is exactly why this is easy to miss. Nothing in your requirement set stops you asking for 60 V, and the simulation will happily give it to you.
+Nothing in your requirement set stops you asking for 60 V, and the simulation will happily give it to you.
 
 ## Reference Gain Sets
 
@@ -108,14 +109,6 @@ The aggressive figures are a landmark, not a recommendation — they tell you ro
 
 ## What You Should Take Away
 
-A simulation will confirm whatever you leave out of it. There is no battery in this model, so there is no limit on what the controller can ask for, and the response you get back looks like a success.
+A simulation will confirm whatever you leave out of it. There is no battery in this model, so there is no physical limit on what the controller can ask for, and the response you get back looks like a success.
 
 The question is not "how fast can I make it?" It is "what response does this robot need, and what am I asking other people to build so I can have it?"
-
-## Notes For Facilitators
-
-Do not mention voltage during step 2. Let the room see a ten-times-faster response that passes every requirement and let them commit to it. Then show the number.
-
-The reaction you want is not "oops, that is too fast" — it is "wait, who is paying for that?" If someone gets there on their own, let them say it.
-
-Keep this section short. Brian's note from the September check-in was explicit: the physical consequences of hitting a limit are module 3's job, and the audience already knows a battery has a voltage. The value here is purely the requirements argument.

@@ -12,7 +12,7 @@ Nothing is broken and nobody made a mistake. The difference is that in your mode
 
 > Controls is a system-level discipline.
 
-You cannot be handed a list of everything that will differ between your model and your hardware, because it depends on the industry, the product and the programme. What you can do is stay curious about three things:
+You cannot be handed a list of everything that will differ between your model and your hardware, because it depends on the industry, the product and the program. What you can do is stay curious about three things:
 
 - **Disturbances** — what pushes on the plant that you did not put in the model
 - **Noise** — sensor noise, electrical pickup, quantization, anything that corrupts what you measure
@@ -28,9 +28,9 @@ Transport delay   0.060 s
 
 Sixty milliseconds, from the moment the wheel turns to the moment your controller can act on it. On a small robot that is unremarkable: a 20 ms control task, filtering inside the encoder driver, and a hop across a bus.
 
-What it costs you is phase. Your loop crosses over at about 13.2 rad/s, and a 60 ms delay at that frequency is **45 degrees** — out of the 86 degrees of phase margin the ideal loop had. More than half your margin, spent on a number nobody thought to tell you.
+What it costs you is phase. Your loop crosses over at about 13.2 rad/s, and a 60 ms delay at that frequency is **45 degrees** — out of the 86 degrees of phase margin the ideal loop had. 
 
-Delay does not make your plant weaker. The gain is untouched. It makes your information **old**, and a controller acting on old information overcorrects.
+It makes your information **old**, and a controller acting on old information overcorrects.
 
 ## What Is In This Folder
 
@@ -110,11 +110,10 @@ measured speed, what the controller sees     0.163 s
 
 A feedback delay does not hold the motor back. It makes the controller's information **old**, and a controller acting on old information overcorrects. The ringing *is* the delay, showing up where the delay actually does its damage.
 
-So why plot the measurement? Because on the robot it is the only thing you have. There is no probe on the shaft reporting true speed to you — there is an encoder, and it is late. The plot shows you what you would actually see on the bench.
 
 ### 5. Do not retune
 
-You will want to. Don't — not here. This module is about noticing the delay, not tuning around it. Module 4 picks up the tuning.
+You will want to. Don't — not here. This module is about noticing the delay, not tuning around it.
 
 ## Requirements
 
@@ -134,13 +133,3 @@ Requested voltage   within +/-12 V
 The lesson is not "always account for delay". It is that the loop you are responsible for extends past the blocks you drew. Sensing, timing, mechanics, software scheduling and actuation all sit inside it, and most of them were decided by people who were not thinking about your phase margin.
 
 Nobody will come looking for the person who set the task period when the robot overshoots on the test rig. They will come to you.
-
-## Notes For Facilitators
-
-Step 3 is worth doing live even though the finished model is supplied. Physically dragging one block into the feedback path makes the point that nothing about the controller changed.
-
-If the room wants more effects — encoder quantization, filtering, sampling — that is the right instinct and the wrong moment. Say so out loud: there are dozens, this is one, and the point is what one does. Adding more would make the plot messier without making the argument stronger.
-
-The phase arithmetic is the line that lands with a technical audience: 45 degrees of your 86, spent on 60 milliseconds.
-
-Step 4a is worth the two minutes even though it looks like a detour. "Why doesn't the output start 60 ms late?" is the first question a sharp participant asks, and the answer - a feedback delay ages your information rather than delaying your plant - is one of the few things in this module that is genuinely counterintuitive. If nobody asks, ask it yourself.
